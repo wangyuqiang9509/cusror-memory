@@ -1,62 +1,62 @@
 ---
 name: writing-clearly-and-concisely
-description: Apply Strunk's timeless writing rules to ANY prose humans will read—documentation, commit messages, error messages, explanations, reports, or UI text. Makes your writing clearer, stronger, and more professional.
+description: 将斯特伦克的经典写作规则应用于任何人类阅读的文字——文档、提交信息、错误信息、解释说明、报告或界面文案。让你的写作更清晰、更有力、更专业。
 ---
 
-# Writing Clearly and Concisely
+# 清晰简洁地写作
 
-## Overview
+## 概述
 
-William Strunk Jr.'s *The Elements of Style* (1918) teaches you to write clearly and cut ruthlessly.
+威廉·斯特伦克的《风格的要素》（1918）教你如何写得清晰，如何果断删减。
 
-**WARNING:** `elements-of-style.md` consumes ~12,000 tokens. Read it only when writing or editing prose.
+**警告：** `elements-of-style.md` 消耗约 12,000 个 token。仅在撰写或编辑文字时阅读。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill whenever you write prose for humans:
+当你为人类撰写文字时使用此技能：
 
-- Documentation, README files, technical explanations
-- Commit messages, pull request descriptions
-- Error messages, UI copy, help text, comments
-- Reports, summaries, or any explanation
-- Editing to improve clarity
+- 文档、README 文件、技术说明
+- 提交信息、拉取请求描述
+- 错误信息、界面文案、帮助文本、注释
+- 报告、摘要或任何解释说明
+- 编辑以提高清晰度
 
-**If you're writing sentences for a human to read, use this skill.**
+**如果你在为人类撰写句子，就使用此技能。**
 
-## Limited Context Strategy
+## 上下文有限时的策略
 
-When context is tight:
-1. Write your draft using judgment
-2. Dispatch a subagent with your draft and `elements-of-style.md`
-3. Have the subagent copyedit and return the revision
+当上下文紧张时：
+1. 凭判断力撰写初稿
+2. 派遣子代理携带你的初稿和 `elements-of-style.md`
+3. 让子代理进行文字润色并返回修订版
 
-## All Rules
+## 全部规则
 
-### Elementary Rules of Usage (Grammar/Punctuation)
-1. Form possessive singular by adding 's
-2. Use comma after each term in series except last
-3. Enclose parenthetic expressions between commas
-4. Comma before conjunction introducing co-ordinate clause
-5. Don't join independent clauses by comma
-6. Don't break sentences in two
-7. Participial phrase at beginning refers to grammatical subject
+### 基本用法规则（语法/标点）
+1. 单数名词所有格加 's
+2. 系列词用逗号分隔，最后一项前不加逗号
+3. 插入语用逗号隔开
+4. 连词引导并列从句前加逗号
+5. 不要用逗号连接独立从句
+6. 不要把句子断成两段
+7. 句首的分词短语必须指向语法主语
 
-### Elementary Principles of Composition
-8. One paragraph per topic
-9. Begin paragraph with topic sentence
-10. **Use active voice**
-11. **Put statements in positive form**
-12. **Use definite, specific, concrete language**
-13. **Omit needless words**
-14. Avoid succession of loose sentences
-15. Express co-ordinate ideas in similar form
-16. **Keep related words together**
-17. Keep to one tense in summaries
-18. **Place emphatic words at end of sentence**
+### 基本写作原则
+8. 一段一主题
+9. 段落以主题句开头
+10. **使用主动语态**
+11. **用肯定形式陈述**
+12. **使用明确、具体、形象的语言**
+13. **删除多余词语**
+14. 避免连续使用松散句
+15. 用相似形式表达并列意思
+16. **把相关词语放在一起**
+17. 摘要中保持时态一致
+18. **把重点词放在句末**
 
-### Section V: Words and Expressions Commonly Misused
-Alphabetical reference for usage questions
+### 第五章：常被误用的词语和表达
+按字母顺序排列的用法参考
 
-## Bottom Line
+## 底线
 
-Writing for humans? Read `elements-of-style.md` and apply the rules. Low on tokens? Dispatch a subagent to copyedit with the guide.
+为人类写作？阅读 `elements-of-style.md` 并应用规则。token 不足？派遣子代理使用指南进行润色。
