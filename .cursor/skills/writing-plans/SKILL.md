@@ -33,7 +33,7 @@ description: 当你有规格说明或多步骤任务的需求时使用，在编�
 ```markdown
 # [功能名称] 实现计划
 
-> **给 Claude：** 必需子技能：使用 superpowers:executing-plans 逐任务实现此计划。
+> **给 Claude：** 必需子技能：使用 executing-plans skill 逐任务实现此计划。
 
 **目标：** [一句话描述要构建什么]
 
