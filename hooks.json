@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "node \".cursor/scripts/hooks/session-start.js\"",
+        "timeout": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "node \".cursor/scripts/hooks/session-end.js\"",
+        "timeout": 10
+      },
+      {
+        "command": "node \".cursor/scripts/hooks/evaluate-session.js\"",
+        "timeout": 10
+      }
+    ],
+    "preCompact": [
+      {
+        "command": "node \".cursor/scripts/hooks/pre-compact.js\"",
+        "timeout": 10
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node -e \"console.error('[Hook] 已阻止: Dev 服务器必须在 tmux 中运行以便访问日志');console.error('[Hook] 使用: tmux new-session -d -s dev \\\"npm run dev\\\"');console.error('[Hook] 然后: tmux attach -t dev');process.exit(2)\"",
+        "matcher": "npm run dev|pnpm( run)? dev|yarn dev|bun run dev",
+        "timeout": 5
+      },
+      {
+        "command": "node -e \"if(!process.env.TMUX){console.error('[Hook] 建议在 tmux 中运行以保持会话持久性');console.error('[Hook] tmux new -s dev  |  tmux attach -t dev')}\"",
+        "matcher": "npm (install|test)|pnpm (install|test)|yarn (install|test)?|bun (install|test)|cargo build|make|docker|pytest|vitest|playwright",
+        "timeout": 5
+      },
+      {
+        "command": "node -e \"console.error('[Hook] 推送前请检查更改...');console.error('[Hook] 继续推送 (移除此 hook 可添加交互式审查)')\"",
+        "matcher": "git push",
+        "timeout": 5
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const cmd=i.command||'';if(/gh pr create/.test(cmd)){const out=i.output||'';const m=out.match(/https:\\/\\/github.com\\/[^/]+\\/[^/]+\\/pull\\/\\d+/);if(m){console.error('[Hook] PR 已创建: '+m[0]);const repo=m[0].replace(/https:\\/\\/github.com\\/([^/]+\\/[^/]+)\\/pull\\/\\d+/,'$1');const pr=m[0].replace(/.*\\/pull\\/(\\d+)/,'$1');console.error('[Hook] 审查命令: gh pr review '+pr+' --repo '+repo)}}})\"",
+        "matcher": "gh pr create",
+        "timeout": 10
+      },
+      {
+        "command": "node -e \"console.error('[Hook] 构建完成 - 后台异步分析运行中')\"",
+        "matcher": "npm run build|pnpm build|yarn build",
+        "timeout": 30
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "node \".cursor/scripts/hooks/suggest-compact.js\"",
+        "timeout": 10
+      },
+      {
+        "command": "node -e \"const{execSync}=require('child_process');const fs=require('fs');let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const p=i.file_path;if(p&&fs.existsSync(p)&&/\\.(ts|tsx|js|jsx)$/.test(p)){try{execSync('npx prettier --write \"'+p+'\"',{stdio:['pipe','pipe','pipe']})}catch(e){}}})\"",
+        "timeout": 30
+      },
+      {
+        "command": "node -e \"const fs=require('fs');let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const i=JSON.parse(d);const p=i.file_path;if(p&&fs.existsSync(p)&&/\\.(ts|tsx|js|jsx)$/.test(p)){const c=fs.readFileSync(p,'utf8');const lines=c.split('\\n');const matches=[];lines.forEach((l,idx)=>{if(/console\\.log/.test(l))matches.push((idx+1)+': '+l.trim())});if(matches.length){console.error('[Hook] 警告: 在 '+p+' 中发现 console.log');matches.slice(0,5).forEach(m=>console.error(m));console.error('[Hook] 提交前请移除 console.log')}}})\"",
+        "timeout": 10
+      }
+    ],
+    "stop": [
+      {
+        "command": "node -e \"const{execSync}=require('child_process');const fs=require('fs');let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{execSync('git rev-parse --git-dir',{stdio:'pipe'})}catch{process.exit(0)}try{const files=execSync('git diff --name-only HEAD',{encoding:'utf8',stdio:['pipe','pipe','pipe']}).split('\\n').filter(f=>/\\.(ts|tsx|js|jsx)$/.test(f)&&fs.existsSync(f));let hasConsole=false;for(const f of files){if(fs.readFileSync(f,'utf8').includes('console.log')){console.error('[Hook] 警告: 在 '+f+' 中发现 console.log');hasConsole=true}}if(hasConsole)console.error('[Hook] 提交前请移除 console.log 语句')}catch(e){}})\"",
+        "timeout": 15,
+        "loop_limit": 5
+      }
+    ]
+  }
+}

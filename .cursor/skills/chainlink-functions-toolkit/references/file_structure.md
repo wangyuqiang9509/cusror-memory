@@ -1,0 +1,89 @@
+# Repository File Structure
+
+Total items: 83
+
+```
+📁 .changeset
+📄 .eslintignore
+📄 .eslintrc.js
+📁 .github
+📄 .gitignore
+📄 .prettierignore
+📄 CHANGELOG.md
+📄 LICENSE
+📄 Makefile
+📄 README.md
+📄 jest.config.js
+📄 jest.config.package.js
+📄 package-lock.json
+📄 package.json
+📄 sonar-project.properties
+📁 src
+📁 test
+📄 tsconfig.build.json
+📄 tsconfig.json
+📄 webpack.config.js
+📄 yarn.lock
+  📄 README.md
+  📄 config.json
+  📄 CODEOWNERS
+  📁 workflows
+  📄 ResponseListener.ts
+  📄 SecretsManager.ts
+  📄 SubscriptionManager.ts
+  📄 buildRequestCBOR.ts
+  📄 decodeResult.ts
+  📄 fetchRequestCommitment.ts
+  📄 index.ts
+  📄 localFunctionsTestnet.ts
+  📁 offchain_storage
+  📁 simulateScript
+  📄 simulationConfig.ts
+  📄 tdh2.js
+  📄 types.ts
+  📁 v1_contract_sources
+  📁 integration
+  📁 unit
+  📁 utils
+    📄 cd.yml
+    📄 lint.yaml
+    📄 sonar-scan.yaml
+    📄 test-package.yaml
+    📄 test.yaml
+    📄 github.ts
+    📄 index.ts
+    📄 Functions.ts
+    📁 deno-sandbox
+    📄 frontendAllowedModules.ts
+    📄 frontendSimulateScript.ts
+    📄 index.ts
+    📄 safePow.ts
+    📄 simulateScript.ts
+    📄 FunctionsCoordinator.ts
+    📄 FunctionsCoordinatorTestHelper.ts
+    📄 FunctionsRouter.ts
+    📄 LinkToken.ts
+    📄 MockV3Aggregator.ts
+    📄 TermsOfServiceAllowList.ts
+    📄 index.ts
+    📄 ResponseListener.test.ts
+    📄 apiFixture.ts
+    📄 fetchRequestCommitment.test.ts
+    📄 integration.test.ts
+    📄 localFunctionsTestnet.test.ts
+    📄 Functions.test.ts
+    📄 apiFixture.ts
+    📄 buildRequestCBOR.test.ts
+    📄 decode_result.test.ts
+    📄 frontendAllowedModules.test.ts
+    📄 frontendSimulateScript.test.ts
+    📄 offchain_storage.test.ts
+    📄 safePower.test.ts
+    📄 simulateScript.test.ts
+    📁 contracts
+    📄 index.ts
+    📄 testSimulationConfig.ts
+      📄 sandbox.ts
+      📄 FunctionsConsumer.sol
+      📄 FunctionsConsumerSource.ts
+```

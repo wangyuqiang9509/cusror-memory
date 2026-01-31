@@ -1,0 +1,204 @@
+---
+name: iterative-retrieval
+description: 渐进式上下文检索模式，解决子智能体的上下文获取难题
+---
+
+# 迭代检索模式
+
+解决多智能体工作流中的"上下文难题"——子智能体在开始工作前，往往不清楚自己需要哪些上下文信息。
+
+## 问题描述
+
+子智能体启动时仅拥有有限的上下文，它无法预知：
+- 哪些文件包含相关代码
+- 代码库中存在哪些设计模式
+- 项目使用的术语和命名规范
+
+常规策略均有缺陷：
+- **全量发送**：超出上下文窗口限制
+- **不发送任何内容**：智能体缺失关键信息
+- **凭猜测发送**：经常判断失误
+
+## 解决方案：迭代检索
+
+通过 4 阶段循环渐进式优化上下文：
+
+```
+┌─────────────────────────────────────────────┐
+│                                             │
+│   ┌──────────┐      ┌──────────┐            │
+│   │   分发    │─────▶│   评估   │            │
+│   │ DISPATCH │      │ EVALUATE │            │
+│   └──────────┘      └──────────┘            │
+│        ▲                  │                 │
+│        │                  ▼                 │
+│   ┌──────────┐      ┌──────────┐            │
+│   │   循环   │◀─────│   精炼   │            │
+│   │   LOOP   │      │  REFINE  │            │
+│   └──────────┘      └──────────┘            │
+│                                             │
+│          最多循环 3 次后继续执行              │
+└─────────────────────────────────────────────┘
+```
+
+### 阶段 1：分发 (DISPATCH)
+
+初始宽泛查询，收集候选文件：
+
+```javascript
+// 从高层意图出发
+const initialQuery = {
+  patterns: ['src/**/*.ts', 'lib/**/*.ts'],
+  keywords: ['authentication', 'user', 'session'],
+  excludes: ['*.test.ts', '*.spec.ts']
+};
+
+// 分发给检索智能体
+const candidates = await retrieveFiles(initialQuery);
+```
+
+### 阶段 2：评估 (EVALUATE)
+
+评估检索内容的相关性：
+
+```javascript
+function evaluateRelevance(files, task) {
+  return files.map(file => ({
+    path: file.path,
+    relevance: scoreRelevance(file.content, task),
+    reason: explainRelevance(file.content, task),
+    missingContext: identifyGaps(file.content, task)
+  }));
+}
+```
+
+评分标准：
+- **高相关 (0.8-1.0)**：直接实现目标功能
+- **中等相关 (0.5-0.7)**：包含相关模式或类型定义
+- **低相关 (0.2-0.4)**：间接相关
+- **无关 (0-0.2)**：不相关，应排除
+
+### 阶段 3：精炼 (REFINE)
+
+基于评估结果更新搜索条件：
+
+```javascript
+function refineQuery(evaluation, previousQuery) {
+  return {
+    // 添加从高相关文件中发现的新模式
+    patterns: [...previousQuery.patterns, ...extractPatterns(evaluation)],
+
+    // 添加代码库中发现的术语
+    keywords: [...previousQuery.keywords, ...extractKeywords(evaluation)],
+
+    // 排除已确认的无关路径
+    excludes: [...previousQuery.excludes, ...evaluation
+      .filter(e => e.relevance < 0.2)
+      .map(e => e.path)
+    ],
+
+    // 针对特定空白区域
+    focusAreas: evaluation
+      .flatMap(e => e.missingContext)
+      .filter(unique)
+  };
+}
+```
+
+### 阶段 4：循环 (LOOP)
+
+使用精炼后的条件重复检索（最多 3 次循环）：
+
+```javascript
+async function iterativeRetrieve(task, maxCycles = 3) {
+  let query = createInitialQuery(task);
+  let bestContext = [];
+
+  for (let cycle = 0; cycle < maxCycles; cycle++) {
+    const candidates = await retrieveFiles(query);
+    const evaluation = evaluateRelevance(candidates, task);
+
+    // 检查是否已获取足够的上下文
+    const highRelevance = evaluation.filter(e => e.relevance >= 0.7);
+    if (highRelevance.length >= 3 && !hasCriticalGaps(evaluation)) {
+      return highRelevance;
+    }
+
+    // 精炼条件并继续
+    query = refineQuery(evaluation, query);
+    bestContext = mergeContext(bestContext, highRelevance);
+  }
+
+  return bestContext;
+}
+```
+
+## 实战示例
+
+### 示例 1：修复 Bug 时的上下文检索
+
+```
+任务："修复认证令牌过期的 Bug"
+
+第 1 轮：
+  分发：在 src/** 中搜索 "token"、"auth"、"expiry"
+  评估：找到 auth.ts (0.9)、tokens.ts (0.8)、user.ts (0.3)
+  精炼：添加关键词 "refresh"、"jwt"；排除 user.ts
+
+第 2 轮：
+  分发：使用精炼后的条件搜索
+  评估：找到 session-manager.ts (0.95)、jwt-utils.ts (0.85)
+  精炼：上下文已充足（2 个高相关文件）
+
+结果：auth.ts、tokens.ts、session-manager.ts、jwt-utils.ts
+```
+
+### 示例 2：功能实现时的上下文检索
+
+```
+任务："为 API 端点添加速率限制"
+
+第 1 轮：
+  分发：在 routes/** 中搜索 "rate"、"limit"、"api"
+  评估：无匹配——代码库使用 "throttle" 术语
+  精炼：添加关键词 "throttle"、"middleware"
+
+第 2 轮：
+  分发：使用精炼后的条件搜索
+  评估：找到 throttle.ts (0.9)、middleware/index.ts (0.7)
+  精炼：需要路由模式
+
+第 3 轮：
+  分发：搜索 "router"、"express" 模式
+  评估：找到 router-setup.ts (0.8)
+  精炼：上下文已充足
+
+结果：throttle.ts、middleware/index.ts、router-setup.ts
+```
+
+## 与智能体集成
+
+在智能体提示词中使用：
+
+```markdown
+为此任务检索上下文时：
+1. 从宽泛的关键词搜索开始
+2. 评估每个文件的相关性（0-1 分）
+3. 识别仍然缺失的上下文
+4. 精炼搜索条件并重复（最多 3 轮）
+5. 返回相关性 >= 0.7 的文件
+```
+
+## 最佳实践
+
+1. **先宽后窄，逐步聚焦** - 初始查询不要过度限定
+2. **学习代码库术语** - 第一轮循环往往能揭示命名规范
+3. **追踪缺失内容** - 明确的空白识别驱动精炼方向
+4. **适可而止** - 3 个高相关文件胜过 10 个勉强相关的
+5. **果断排除** - 低相关文件不会变得相关
+
+## 相关资源
+
+- [完整指南](https://x.com/affaanmustafa/status/2014040193557471352) - 子智能体编排章节
+- `continuous-learning` 技能 - 适用于需要持续改进的模式
+- 智能体定义位于 `~/.claude/agents/`
