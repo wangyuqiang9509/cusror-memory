@@ -5,6 +5,10 @@
       {
         "command": "node \".cursor/scripts/hooks/session-start.js\"",
         "timeout": 10
+      },
+      {
+        "command": "node \".cursor/skills/continuous-learning-v2/hooks/init.js\"",
+        "timeout": 5
       }
     ],
     "sessionEnd": [
@@ -15,6 +19,10 @@
       {
         "command": "node \".cursor/scripts/hooks/evaluate-session.js\"",
         "timeout": 10
+      },
+      {
+        "command": "node \".cursor/skills/continuous-learning-v2/hooks/session-analyze.js\"",
+        "timeout": 15
       }
     ],
     "preCompact": [
@@ -23,7 +31,17 @@
         "timeout": 10
       }
     ],
+    "beforeShellExecution": [
+      {
+        "command": "node \".cursor/skills/continuous-learning-v2/hooks/observe.js\"",
+        "timeout": 5
+      }
+    ],
     "afterFileEdit": [
+      {
+        "command": "node \".cursor/skills/continuous-learning-v2/hooks/observe.js\"",
+        "timeout": 5
+      },
       {
         "command": "node \".cursor/scripts/hooks/suggest-compact.js\"",
         "timeout": 10

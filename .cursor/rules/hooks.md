@@ -6,7 +6,7 @@
 - **PostToolUse**：工具执行后触发（用于自动格式化、检查）
 - **Stop**：会话结束时触发（用于最终验证）
 
-## 当前钩子配置（位于 ~/.claude/settings.json）
+## 当前钩子配置（位于 ~/.cursor/settings.json）
 
 ### PreToolUse
 - **tmux 提醒**：对长时间运行的命令（npm、pnpm、yarn、cargo 等）建议使用 tmux
@@ -19,7 +19,11 @@
 - **TypeScript 检查**：编辑 .ts/.tsx 文件后运行 tsc
 - **console.log 警告**：检测已编辑文件中的 console.log 并发出警告
 
-### Stop
+### sessionEnd
+- **持续学习评估**：会话结束时提醒用户使用 /learn 命令提取可复用模式
+- **会话日志**：记录会话时间戳和上下文信息
+
+### stop
 - **console.log 审计**：会话结束前检查所有已修改文件中的 console.log
 
 ## 自动授权权限

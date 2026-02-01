@@ -11,9 +11,9 @@ description: 自动从 Claude Code 会话中提取可复用模式，并将其保
 
 本技能作为 **Stop 钩子** 在每次会话结束时运行：
 
-1. **会话评估**：检查会话消息数量是否达到阈值（默认：10 条以上）
-2. **模式识别**：从会话中识别可提取的模式
-3. **技能提取**：将有价值的模式保存至 `~/.claude/skills/learned/`
+1. **会话结束提示**：在会话结束时提醒用户可以提取模式
+2. **手动提取**：用户执行 `/learn` 命令识别可提取的模式
+3. **技能保存**：将有价值的模式保存至 `~/.cursor/skills/learned/`
 
 ## 配置说明
 
@@ -24,7 +24,7 @@ description: 自动从 Claude Code 会话中提取可复用模式，并将其保
   "min_session_length": 10,
   "extraction_threshold": "medium",
   "auto_approve": false,
-  "learned_skills_path": "~/.claude/skills/learned/",
+  "learned_skills_path": "~/.cursor/skills/learned/",
   "patterns_to_detect": [
     "error_resolution",
     "user_corrections",
@@ -52,27 +52,27 @@ description: 自动从 Claude Code 会话中提取可复用模式，并将其保
 
 ## 钩子配置
 
-在 `~/.claude/settings.json` 中添加以下配置：
+在项目根目录的 `hooks.json` 中添加以下配置：
 
 ```json
 {
+  "version": 1,
   "hooks": {
-    "Stop": [{
-      "matcher": "*",
-      "hooks": [{
-        "type": "command",
-        "command": "~/.claude/skills/continuous-learning/evaluate-session.sh"
-      }]
-    }]
+    "sessionEnd": [
+      {
+        "command": "node \".cursor/scripts/hooks/evaluate-session.js\"",
+        "timeout": 10
+      }
+    ]
   }
 }
 ```
 
-## 为什么使用 Stop 钩子？
+## 为什么使用 sessionEnd 钩子？
 
 - **轻量级**：仅在会话结束时运行一次
 - **非阻塞**：不会增加每条消息的响应延迟
-- **上下文完整**：可访问完整的会话记录
+- **提示作用**：提醒用户回顾会话中的可复用模式
 
 ## 相关资源
 

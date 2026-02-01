@@ -28,33 +28,33 @@ function getHomeDir() {
 }
 
 /**
- * Get the Claude config directory
- * 获取 Claude 配置目录
+ * Get the Cursor config directory
+ * 获取 Cursor 配置目录
  *
- * @returns {string} Claude 配置目录的路径 (~/.claude)
+ * @returns {string} Cursor 配置目录的路径 (~/.cursor)
  */
-function getClaudeDir() {
-  return path.join(getHomeDir(), '.claude');
+function getCursorDir() {
+  return path.join(getHomeDir(), '.cursor');
 }
 
 /**
  * Get the sessions directory
  * 获取会话目录
  *
- * @returns {string} 会话目录的路径 (~/.claude/sessions)
+ * @returns {string} 会话目录的路径 (~/.cursor/sessions)
  */
 function getSessionsDir() {
-  return path.join(getClaudeDir(), 'sessions');
+  return path.join(getCursorDir(), 'sessions');
 }
 
 /**
  * Get the learned skills directory
  * 获取学习到的技能目录
  *
- * @returns {string} 学习技能目录的路径 (~/.claude/skills/learned)
+ * @returns {string} 学习技能目录的路径 (~/.cursor/skills/learned)
  */
 function getLearnedSkillsDir() {
-  return path.join(getClaudeDir(), 'skills', 'learned');
+  return path.join(getCursorDir(), 'skills', 'learned');
 }
 
 /**
@@ -468,7 +468,7 @@ module.exports = {
 
   // 目录操作 / Directories
   getHomeDir,           // 获取用户主目录
-  getClaudeDir,         // 获取 Claude 配置目录
+  getCursorDir,         // 获取 Cursor 配置目录
   getSessionsDir,       // 获取会话目录
   getLearnedSkillsDir,  // 获取学习技能目录
   getTempDir,           // 获取临时目录

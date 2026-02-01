@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "hooks": {
+        "sessionStart": [
+            {
+              "command": "node \".cursor/skills/continuous-learning-v2/hooks/init.js\"",
+              "timeout": 5
+            }
+        ],
+        "sessionEnd": [
+            {
+              "command": "node \".cursor/skills/continuous-learning-v2/hooks/session-analyze.js\"",
+              "timeout": 15
+            }
+        ],
+        "beforeShellExecution": [
+            {
+              "command": "node \".cursor/skills/continuous-learning-v2/hooks/observe.js\"",
+              "timeout": 5
+            }
+        ],
+        "afterFileEdit": [
+            {
+              "command": "node \".cursor/skills/continuous-learning-v2/hooks/observe.js\"",
+              "timeout": 5
+            }
+        ] 
+    }
+}
